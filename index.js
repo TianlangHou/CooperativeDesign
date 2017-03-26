@@ -14,7 +14,7 @@ io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('news', function(data){
     console.log(data);
-    io.emit('news', data);
+    socket.broadcast.emit('news', data);
   });
 });
 

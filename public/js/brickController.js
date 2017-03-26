@@ -4,7 +4,9 @@ LegoCrafts.BrickController = function(options) {
     var color = 0xff0000;
     var width = 2;
     var length = 3;
-
+this.getColor = function(){
+    return color;
+};
     this.changeColor = function(changToColor) {
         color = changToColor;
     };

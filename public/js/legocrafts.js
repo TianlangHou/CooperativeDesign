@@ -241,10 +241,24 @@ LegoCrafts.Playground = function(options) {
 	};
 
 	function onDocumentMouseDown(event) {
-		console.log("mouse down here--------");
-socket.emit('news', 'world');
+		
 socket.on('news', function (data) {
-  console.log(data);
+	
+
+
+  var voxel = JSON.parse(data);
+  console.log(voxel);
+  brickController.changeType(voxel.typeWidth,voxel.typeLength);
+  brickController.changeColor(voxel.color);
+  var brick = brickController.drawBrickNew();
+ 		brick.position.setY(voxel.position.y);
+		brick.position.setX(voxel.position.x);
+		brick.position.setZ(voxel.position.z); 
+			
+					scene.add(brick);
+					//add the brick to intersects objects array too
+					objects.push(brick);
+					collideList.push(brick.children[0]);
 });
 
 		event.preventDefault();
@@ -284,14 +298,27 @@ socket.on('news', function (data) {
 				var isCollision = boardController.collisionDetect(mouse, rollOverBrick, collideList, camera);
 				if (isCollision === true) {
 					var voxel = rollOverBrick.clone();
-					voxel.type = rollOverBrick.alignX/LegoCrafts.BoardUnit*2+""+rollOverBrick.alignY/LegoCrafts.BoardUnit*2;
+					voxel.type = rollOverBrick.alignY/LegoCrafts.BoardUnit*2+","+rollOverBrick.alignX/LegoCrafts.BoardUnit*2;
+					voxel.typeWidth = rollOverBrick.alignY/LegoCrafts.BoardUnit*2;
+					voxel.typeLength = rollOverBrick.alignX/LegoCrafts.BoardUnit*2;
 					voxel.position.setY(voxel.position.y - LegoCrafts.BoardUnitCylinderHeight);
 					//add the new brick to scene
 					scene.add(voxel);
 					//add the brick to intersects objects array too
 					objects.push(voxel);
-					collideList.push(voxel.children[0]);
+					collideList.push(voxel);
+					//TODO collaboration
+					var temp={};
 					
+					temp.typeWidth = voxel.typeWidth;
+					temp.typeLength = voxel.typeLength;
+					temp.position = voxel.position;
+					temp.color = voxel.children[0].material.color.getHex();
+					console.log(temp.color);
+					var string = JSON.stringify(temp);
+					socket.emit('news', string);
+
+					//end
 				} else {
 					return;
 				}
