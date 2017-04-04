@@ -306,7 +306,7 @@ socket.on('news', function (data) {
 					scene.add(voxel);
 					//add the brick to intersects objects array too
 					objects.push(voxel);
-					collideList.push(voxel);
+					collideList.push(voxel.children[0]);
 					//TODO collaboration
 					var temp={};
 					
